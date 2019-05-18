@@ -12,7 +12,7 @@ export const Styles = theme => ({
     content: {
         flexGrow: 1,
         padding: theme.spacing.unit * 3,
-        maxWidth: 500
+        maxWidth: 600  
     },
     inputSearch: {
         [theme.breakpoints.up('md')]: {
@@ -51,8 +51,8 @@ export const Styles = theme => ({
         paddingLeft: 0
     },
     divButtonAddProduct: {
-        marginTop: 40,
-        marginBottom: 40,
+        marginTop: 20,
+        marginBottom: 20,
         display: 'flex',
         justifyContent: 'center'
     },

@@ -55,7 +55,7 @@ class AppTopBar extends Component {
 
                     <img 
                         className={classes.navIcon} 
-                        src="https://cdn3.iconfinder.com/data/icons/food-155/100/Healthy_food_2-512.png" 
+                        src="https://image.flaticon.com/icons/png/512/45/45332.png" 
                         alt=""
                     />
 

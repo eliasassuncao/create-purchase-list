@@ -1,7 +1,7 @@
 import {ACTION_TYPES} from "../constants";
 
 const initial = {
-    shoopingList: []
+    foodList: {}
 };
 
 export default (state = initial, action) => {
@@ -9,21 +9,31 @@ export default (state = initial, action) => {
         case ACTION_TYPES.SHOPPING_LIST.ADD:
             return {
                 ...state,
-                shoopingList: [
-                    ...state.shoopingList,
-                    ...action.payload
-                ]
-            }
-        case ACTION_TYPES.SHOPPING_LIST.ADD:
+                foodList: action.payload
+            };
+        case ACTION_TYPES.SHOPPING_LIST.CHANGE_STATUS:
+            let index = action.payload.index;
+            let status = action.payload.status;
             return {
                 ...state,
-                shoopingList: action.payload
-            };
+                foodList: {
+                    ...state.foodList,
+                    [index]: {
+                        ...state.foodList[index],
+                        placed: status
+                    }
+                }
+            }
         case ACTION_TYPES.SHOPPING_LIST.CLEAN:
             return {
                 ...state,
-                shoopingList: initial
+                foodList: {}
             };
+            case ACTION_TYPES.SHOPPING_LIST.REMOVE:
+                return {
+                    ...state,
+                    foodList: action.payload
+                }
         default:
             return state
     }
