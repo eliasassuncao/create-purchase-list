@@ -53,6 +53,9 @@ export const Styles = theme => ({
         fontSize: 18,
         fontWeight: '600',
         marginBottom: 20
+    },
+    listEmptyText: {
+        fontWeight: '600'
     }
     
 });

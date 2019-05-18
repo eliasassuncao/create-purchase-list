@@ -62,5 +62,13 @@ export const Styles = theme => ({
     },
     iconCheck: {
         color: 'white'
+    },
+    divLoading: {
+        height: 100,
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    loading: {
+        color: '#ff8d00'
     }
 });

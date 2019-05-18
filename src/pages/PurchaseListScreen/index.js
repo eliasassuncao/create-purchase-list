@@ -15,7 +15,7 @@ import {
   ListItemSecondaryAction,
   IconButton,
   CardActions,
-  Button
+  Button,
 } from '@material-ui/core';
 import {
   Delete,
@@ -61,7 +61,7 @@ class PurchaseListScreen extends Component {
                   <Done className={classes.informationIconPending} />
                 </div>
                 <div className={classes.informationIcons}>
-                  <Typography className={classes.informationText}>Item no carrinho</Typography>
+                  <Typography className={classes.informationText}>Item colocado no carrinho</Typography>
                   <DoneAll className={classes.informationIconInCart} />
                 </div>
                 <div className={classes.informationIcons}>
@@ -72,7 +72,7 @@ class PurchaseListScreen extends Component {
               <List className={classes.listContainer}>
                 {
                   _.isEmpty(shoppingList) ?
-                    <Typography>Carrinho de compras vazio</Typography>
+                    <Typography className={classes.listEmptyText}>Lista de compras vazio</Typography>
                     :
                     _.map(shoppingList, (item, index) => (
                       <ListItem className={classes.listItem} key={item.id}>
@@ -119,7 +119,7 @@ class PurchaseListScreen extends Component {
                 className={classes.buttonClearCart}
                 onClick={() => resetShoppingList()}
               >
-                Limpar Carrinho
+                Limpar Lista
               <Clear className={classes.iconClear} />
               </Button>
             </CardActions>
