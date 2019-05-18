@@ -30,6 +30,12 @@ export const Styles = theme => ({
         paddingRight: 15,
         fontSize: 15
     },
+    numberProductSelectedText: {
+        paddingLeft: 15,
+        paddingRight: 15,
+        fontSize: 16,
+        fontWeight: '600'
+    },
     listContainer: {
         overflowX: 'auto',
         maxHeight: 400,

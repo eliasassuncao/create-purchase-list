@@ -26,6 +26,10 @@ import {
   fetchFood as fetchFoodService
 } from '../../services';
 import _ from 'lodash';
+import classNames from 'classnames';
+import {addFoodListToShoppingList} from '../../actions';
+import {compose} from 'redux';
+import {connect} from 'react-redux'
 
 class AddProductScreen extends Component {
   
@@ -53,8 +57,6 @@ class AddProductScreen extends Component {
     this.setState({
       categoryList: category.data,
       foodList: arrFormated
-    }, () => {
-     
     })
   };
 
@@ -71,7 +73,8 @@ class AddProductScreen extends Component {
       return {
         id: food.id,
         description: descriptionSplited[0].toLowerCase(),
-        category_id: food.category_id
+        category_id: food.category_id,
+        quantity: 0
       }
     })
     /*
@@ -177,9 +180,58 @@ class AddProductScreen extends Component {
         }
       })
       }
+    }else if(selectBoxValue !== "") {
+      list = _.filter(foodList, food => {
+        if(food.category_id === selectBoxValue) {
+          return food
+        }
+      })
     }
     return list;
   }
+
+  _onChangeQuantityFood = (operator, indexFood) => {
+    if(operator === 'sum') {
+      this.setState({
+        foodList: {
+          ...this.state.foodList,
+          [indexFood]: {
+            ...this.state.foodList[indexFood],
+            quantity: this.state.foodList[indexFood].quantity + 1
+          }
+        }
+      })
+    }else if(this.state.foodList[indexFood].quantity > 0){
+      this.setState({
+        foodList: {
+          ...this.state.foodList,
+          [indexFood]: {
+            ...this.state.foodList[indexFood],
+            quantity: this.state.foodList[indexFood].quantity - 1
+          }
+        }
+      })
+    }
+    
+  }
+
+  _onClickButtonAddProduct = () => {
+    const {
+      foodList
+    } = this.state;
+    const {
+      addFoodListToShoppingList
+    } = this.props;
+    let foodListSelected =_.filter(foodList, food => food.quantity > 0);
+    addFoodListToShoppingList(foodListSelected)
+    let resetFoodList = _.map(foodList, food => {
+      return {
+        ...food,
+        quantity: 0
+      }
+    })
+    this.setState({foodList: resetFoodList})
+  };
 
   render() {
     const {
@@ -205,13 +257,24 @@ class AddProductScreen extends Component {
                   <ListItemText
                     primary={item.description}
                   />
-                  <Fab className={classes.buttonAddProduct}>
+                  <Fab 
+                    className={classes.buttonAddProduct}
+                    onClick={() => this._onChangeQuantityFood('subtract', index)}
+                  >
                     <Remove/>
                   </Fab>
-                  <Typography className={classes.numberProductText}>
-                    2
+                  <Typography className={classNames(
+                    item.quantity > 0?
+                      classes.numberProductText
+                      :
+                      classes.numberProductText
+                  )}>
+                    {item.quantity}
                   </Typography >
-                  <Fab className={classes.buttonAddProduct}>
+                  <Fab 
+                    className={classes.buttonAddProduct}
+                    onClick={() => this._onChangeQuantityFood('sum', index)}
+                  >
                     <Add/>
                   </Fab>
                 </ListItem>
@@ -219,7 +282,11 @@ class AddProductScreen extends Component {
             }
           </List>
           <div className={classes.divButtonAddProduct}>
-            <Button variant="contained" className={classes.buttonAddProductToList}>
+            <Button 
+              variant="contained" 
+              className={classes.buttonAddProductToList}
+              onClick={() => this._onClickButtonAddProduct()}
+            >
               Adicionar produto
               <Check className={classes.iconCheck}/>
             </Button>
@@ -231,4 +298,7 @@ class AddProductScreen extends Component {
   }
 }
 
-export default withStyles(Styles, { withTheme: true })(AddProductScreen);
+export default compose(
+  withStyles(Styles, {withTheme: true}),
+  connect(null, {addFoodListToShoppingList}),
+)(AddProductScreen);
