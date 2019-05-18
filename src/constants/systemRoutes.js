@@ -10,5 +10,5 @@ export const SYSTEM_ROUTES = {
     ADD_PRODUCT: {
         title: 'Adicionar produto',
         routeTo: '/adicionar-produto'
-    }
+    },
 }
