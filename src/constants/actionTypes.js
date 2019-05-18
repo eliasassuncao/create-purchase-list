@@ -4,4 +4,5 @@ export const ACTION_TYPES = {
         SM_DOWN_MENU: 'SM_DOWN_MENU'
     },
     LOADING: 'LOADING_PROGRESS',
+    FETCH_FOODS: 'FETCH_FOODS'
 };

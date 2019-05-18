@@ -29,14 +29,18 @@ import _ from 'lodash';
 
 class AddProductScreen extends Component {
   
-  state = {
-    foodList: [],
-    categoryList: [],
-    inputs: {
-      inputSearchValue: "",
-      selectBoxValue: ""
-    }
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      foodList: [],
+      categoryList: [],
+      inputs: {
+        inputSearchValue: "",
+        selectBoxValue: ""
+      }
+    };
+    this._onChangeSearchInput = this._onChangeSearchInput.bind(this);
+  }
 
   componentDidMount() {
       this._fetchCategoryAndFoods()
@@ -66,7 +70,8 @@ class AddProductScreen extends Component {
       let descriptionSplited = food.description.split(",");
       return {
         id: food.id,
-        description: descriptionSplited[0]
+        description: descriptionSplited[0].toLowerCase(),
+        category_id: food.category_id
       }
     })
     /*
@@ -75,17 +80,14 @@ class AddProductScreen extends Component {
     return _.mapKeys(foodDescriptionFormated , 'description');
   };
 
-  _onChangeSearchInput = _.debounce((e) => {
+  _onChangeSearchInput = _.debounce((event) => {
     this.setState({
-      ...this.state,
       inputs: {
         ...this.state.inputs,
-        inputSearchValue: e.target.value
+        inputSearchValue: event.toLowerCase()
       }
-    }, () => {
-        //BUSCAR NA LISTA
     })
-  }, 700)
+}, 700)
 
   _onChangeSelectBox = (e) => {
     this.setState({
@@ -143,11 +145,41 @@ class AddProductScreen extends Component {
           id="input-search-product"
           label="Pesquisar produto..."
           value={inputSearch}
-          onChange={this._onChangeSearchInput}
+          onChange={(e) => this._onChangeSearchInput(e.target.value)}
           className={classes.inputSearch}
       />
       )
   };
+
+  _renderListFood = () => {
+    const {
+      inputs: {
+        inputSearchValue,
+        selectBoxValue
+      },
+      foodList
+    } = this.state;
+    let list = foodList; 
+    /*
+      Filtro feito manualmente por conta da API não suportar buscas por string, somente por id.
+    */
+    if(inputSearchValue !== "") {
+      if(selectBoxValue !== "") {
+        list =_.filter(foodList, food => {
+          if(_.includes(food.description, inputSearchValue) && food.category_id === selectBoxValue){
+            return food
+          }
+        })
+      }else {
+        list =_.filter(foodList, food => {
+        if(_.includes(food.description, inputSearchValue)){
+          return food
+        }
+      })
+      }
+    }
+    return list;
+  }
 
   render() {
     const {
@@ -156,7 +188,6 @@ class AddProductScreen extends Component {
     const {
       foodList
     } = this.state;
-    console.log(foodList, "<---- foodList")
     return (
       <div className={classes.root}>
       <AppTopBar />
@@ -169,7 +200,7 @@ class AddProductScreen extends Component {
         </div>
           <List className={classes.listContainer}>
             {
-              _.map(foodList,(item, index) => (
+              _.map(this._renderListFood(),(item, index) => (
                 <ListItem className={classes.listItem} key={item.id}>
                   <ListItemText
                     primary={item.description}
