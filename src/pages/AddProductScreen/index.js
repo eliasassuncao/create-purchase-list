@@ -34,6 +34,7 @@ import classNames from 'classnames';
 import { addFoodListToShoppingList } from '../../actions';
 import { compose } from 'redux';
 import { connect } from 'react-redux'
+import { foodData, categoryData } from '../../constants';
 
 class AddProductScreen extends Component {
 
@@ -56,17 +57,27 @@ class AddProductScreen extends Component {
   };
 
   _fetchCategoryAndFoods = async () => {
-    this.setState({loading: true});
-    //Buscar categorias e produtos
-    let category = await fetchCategoryService();
-    let foodArr = await fetchFoodService()
-    //formatar o array de produtos, retirando dados que não vai ser usado.
-    let arrFormated = this._formatArrFood(foodArr);
-    this.setState({
-      categoryList: category.data,
-      foodList: arrFormated,
-      loading: false
-    })
+    let foodArr = {};
+    let category = {};
+    try {
+      this.setState({ loading: true });
+      //Buscar categorias e produtos
+      category = await fetchCategoryService();
+      foodArr = await fetchFoodService()
+    } catch (e) {
+      category = { data: categoryData };
+      foodArr = { data: foodData };
+    }
+    finally {
+      //formatar o array de produtos, retirando dados que não vai ser usado.
+      let arrFormated = this._formatArrFood(foodArr);
+      this.setState({
+        categoryList: category.data,
+        foodList: arrFormated,
+        loading: false
+      })
+
+    }
   };
 
   _formatArrFood = (foodArr) => {
@@ -196,19 +207,19 @@ class AddProductScreen extends Component {
         }
       })
     }
-    if(_.isEmpty(list) && inputSearchValue !== "" && selectBoxValue === "") {
+    if (_.isEmpty(list) && inputSearchValue !== "" && selectBoxValue === "") {
       //Caso não encontre o produto pela lista, criar um produto personalizado.
-        this.setState({
-          foodList: {
-            ...this.state.foodList,
-            [inputSearchValue]: {
-              description: inputSearchValue,
-              id: Math.random(),
-              placed: false,
-              quantity: 0
-            }
+      this.setState({
+        foodList: {
+          ...this.state.foodList,
+          [inputSearchValue]: {
+            description: inputSearchValue,
+            id: Math.random(),
+            placed: false,
+            quantity: 0
           }
-        })
+        }
+      })
     }
     return _.mapKeys(list, 'description');
   }
@@ -247,7 +258,7 @@ class AddProductScreen extends Component {
     } = this.props;
     //Buscar produtos em que foi selecionado ao menos 1.
     let foodListSelected = _.filter(foodList, food => food.quantity > 0);
-    if(_.isEmpty(foodListSelected)){
+    if (_.isEmpty(foodListSelected)) {
       return
     }
     addFoodListToShoppingList(foodListSelected)
@@ -285,7 +296,7 @@ class AddProductScreen extends Component {
                 {
                   loading ?
                     <div className={classes.divLoading}>
-                      <CircularProgress className={classes.loading}/>
+                      <CircularProgress className={classes.loading} />
                     </div>
                     :
                     _.map(this._renderListFood(), (item, index) => (

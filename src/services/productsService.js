@@ -1,10 +1,10 @@
 import axios from 'axios'
-import {URLS} from "../constants";
+import { URLS } from "../constants";
 
 export const fetchCategory = () => {
-    return axios.get(`${URLS.CATEGORY}`)
+    return axios.get(`${URLS.CATEGORY}`);
 };
 
 export const fetchFood = () => {
-    return axios.get(`${URLS.FOOD}`)
+    return axios.get(`${URLS.FOOD}`);
 };
